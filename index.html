@@ -3,8 +3,31 @@
 <head>
   <title>Music Taste Quiz</title>
   <style>
-    body { font-family: Arial; padding: 2em; max-width: 600px; margin: auto; }
-    button { margin: 0.5em; padding: 0.5em 1em; }
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: auto;
+      padding: 2em;
+      text-align: center;
+    }
+    img {
+      width: 300px;
+      height: auto;
+      cursor: pointer;
+      border: 3px solid transparent;
+      border-radius: 8px;
+      transition: 0.2s;
+    }
+    img:hover {
+      border-color: #888;
+    }
+    .choice {
+      margin-bottom: 2em;
+    }
+    .caption {
+      margin-bottom: 0.5em;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -13,49 +36,106 @@
 <div id="quiz"></div>
 
 <script>
-  const questions = [
-    {
-      text: "Kendrick Lamar's *good kid, m.A.A.d city* or Beyoncé's *Renaissance*?",
-      choices: ["Kendrick Lamar", "Beyoncé"]
+  const questions = {
+    start: {
+      text: "Pick one:",
+      choices: [
+        {
+          label: "Kendrick Lamar – good kid, m.A.A.d city",
+          image: "https://upload.wikimedia.org/wikipedia/en/a/a3/Good_kid_m.A.A.d_city_album_cover.jpg",
+          next: "hiphop1"
+        },
+        {
+          label: "Beyoncé – Renaissance",
+          image: "https://upload.wikimedia.org/wikipedia/en/0/0d/Beyonce_-_Renaissance.png",
+          next: "pop1"
+        }
+      ]
     },
-    {
-      text: "Beyoncé's *Renaissance* or Taylor Swift's *Midnights*?",
-      choices: ["Beyoncé", "Taylor Swift"]
+    hiphop1: {
+      text: "Choose your next favorite:",
+      choices: [
+        {
+          label: "Tyler, the Creator – IGOR",
+          image: "https://upload.wikimedia.org/wikipedia/en/a/a0/Tyler%2C_the_Creator_-_Igor.png",
+          next: "end"
+        },
+        {
+          label: "Vince Staples – Ramona Park Broke My Heart",
+          image: "https://upload.wikimedia.org/wikipedia/en/f/f1/Vince_Staples_-_Ramona_Park_Broke_My_Heart.png",
+          next: "end"
+        }
+      ]
     },
-    {
-      text: "Taylor Swift's *Midnights* or Frank Ocean's *Blonde*?",
-      choices: ["Taylor Swift", "Frank Ocean"]
+    pop1: {
+      text: "Next up:",
+      choices: [
+        {
+          label: "Taylor Swift – Midnights",
+          image: "https://upload.wikimedia.org/wikipedia/en/d/d3/Taylor_Swift_-_Midnights.png",
+          next: "end"
+        },
+        {
+          label: "SZA – SOS",
+          image: "https://upload.wikimedia.org/wikipedia/en/e/e1/SZA_-_SOS.png",
+          next: "end"
+        }
+      ]
+    },
+    end: {
+      text: "🎉 You're done! Here's what you picked:",
+      choices: []
     }
-  ];
+  };
 
-  let currentQuestion = 0;
-  let answers = [];
+  let currentQuestion = "start";
+  const answers = [];
 
-  function showQuestion() {
+  function showQuestion(id) {
     const quiz = document.getElementById('quiz');
     quiz.innerHTML = '';
-    if (currentQuestion >= questions.length) {
-      quiz.innerHTML = `<h2>Your Picks:</h2><ul>${answers.map(a => `<li>${a}</li>`).join('')}</ul>`;
-      return;
-    }
-    const q = questions[currentQuestion];
+
+    const q = questions[id];
+    if (!q) return;
+
     const questionEl = document.createElement('h2');
     questionEl.textContent = q.text;
     quiz.appendChild(questionEl);
 
+    if (q.choices.length === 0) {
+      const list = document.createElement('ul');
+      answers.forEach(answer => {
+        const item = document.createElement('li');
+        item.textContent = answer;
+        list.appendChild(item);
+      });
+      quiz.appendChild(list);
+      return;
+    }
+
     q.choices.forEach(choice => {
-      const btn = document.createElement('button');
-      btn.textContent = choice;
-      btn.onclick = () => {
-        answers.push(choice);
-        currentQuestion++;
-        showQuestion();
+      const container = document.createElement('div');
+      container.className = 'choice';
+
+      const caption = document.createElement('div');
+      caption.className = 'caption';
+      caption.textContent = choice.label;
+      container.appendChild(caption);
+
+      const img = document.createElement('img');
+      img.src = choice.image;
+      img.alt = choice.label;
+      img.onclick = () => {
+        answers.push(choice.label);
+        showQuestion(choice.next);
       };
-      quiz.appendChild(btn);
+
+      container.appendChild(img);
+      quiz.appendChild(container);
     });
   }
 
-  showQuestion();
+  showQuestion(currentQuestion);
 </script>
 
 </body>
