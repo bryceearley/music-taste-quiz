@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Music Taste Quiz</title>
+  <style>
+    body { font-family: Arial; padding: 2em; max-width: 600px; margin: auto; }
+    button { margin: 0.5em; padding: 0.5em 1em; }
+  </style>
+</head>
+<body>
+
+<h1>🎵 What's Your Music Taste?</h1>
+<div id="quiz"></div>
+
+<script>
+  const questions = [
+    {
+      text: "Kendrick Lamar's *good kid, m.A.A.d city* or Beyoncé's *Renaissance*?",
+      choices: ["Kendrick Lamar", "Beyoncé"]
+    },
+    {
+      text: "Beyoncé's *Renaissance* or Taylor Swift's *Midnights*?",
+      choices: ["Beyoncé", "Taylor Swift"]
+    },
+    {
+      text: "Taylor Swift's *Midnights* or Frank Ocean's *Blonde*?",
+      choices: ["Taylor Swift", "Frank Ocean"]
+    }
+  ];
+
+  let currentQuestion = 0;
+  let answers = [];
+
+  function showQuestion() {
+    const quiz = document.getElementById('quiz');
+    quiz.innerHTML = '';
+    if (currentQuestion >= questions.length) {
+      quiz.innerHTML = `<h2>Your Picks:</h2><ul>${answers.map(a => `<li>${a}</li>`).join('')}</ul>`;
+      return;
+    }
+    const q = questions[currentQuestion];
+    const questionEl = document.createElement('h2');
+    questionEl.textContent = q.text;
+    quiz.appendChild(questionEl);
+
+    q.choices.forEach(choice => {
+      const btn = document.createElement('button');
+      btn.textContent = choice;
+      btn.onclick = () => {
+        answers.push(choice);
+        currentQuestion++;
+        showQuestion();
+      };
+      quiz.appendChild(btn);
+    });
+  }
+
+  showQuestion();
+</script>
+
+</body>
+</html>
